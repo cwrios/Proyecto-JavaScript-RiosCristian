@@ -165,7 +165,7 @@ for (const producto of listaProductos) {
     <div class="card">
         <div class="card-body">
             <p class="card-text">Nombre: <b>${producto.nombre}</b></p>
-            <p class="card-text">Precio compra: <b>${producto.precio}</b></p>
+            <p class="card-text">Precio: <b>${producto.precio}</b></p>
         </div>
     </div>`;
 
