@@ -1,73 +1,128 @@
-
-const listaProductos = [
-    {
-    id: 1,
-    nombre: "Guardapolvo Acrocel Blanco",
-    precio: "3500",
-    boton: "comprar.1"
-    },
-    {
-    id: 2,
-    nombre: "Guardapolvo Acrocel Color",
-    precio: "3600",
-    boton: "comprar.2"
-    },
-    {
-    id: 3,
-    nombre: "Guardapolvo Tropical Mecanica Blanco",
-    precio: "3700",
-    boton: "comprar.3"
-    },
-    { 
-    id: 4,
-    nombre: "Guardapolvo Tropical Mecanica Color",
-    precio: "3800",
-    boton: "comprar.4" 
-    },
-];
-
-const contenedorProductos = document.getElementById("contenedor-productos");
-
-for (const producto of listaProductos) {
-    let column = document.createElement("div");
-    column.className = "col-md-4 mt-3 ";
-    column.id = `columna-${producto.id}`;
-    column.innerHTML = `
-    <div class="card">
-        <div class="card-body">
-            <p class="card-text">Nombre: <b>${producto.nombre}</b></p>
-            <p class="card-text">Precio: <b>${producto.precio}</b></p>
-            <button class="btn btn-primary" id=${producto.boton}> ${producto.boton} </button>
-        </div>
-    </div>`;
-
-    contenedorProductos.append(column);
+class Producto {
+    constructor(id, nombre, img, precio) {
+        this.id = id;
+        this.nombre = nombre;
+        this.img = img;
+        this.precio = precio;
+    }
 }
-let botonUno = document.getElementById("comprar.1")
-    botonUno.onclick = () =>{
-        console.log(listaProductos[0])
-        alert("Has comprado un: " + listaProductos[0].nombre + " al precio de: $" + listaProductos[0].precio)
+class Carrito {
+    constructor(id) {
+        this.id = id;
+        this.productos = [];
     }
-
-    let botonDos = document.getElementById("comprar.2")
-    botonDos.onclick = () =>{
-        console.log(listaProductos[1])
-        alert("Has comprado un: " + listaProductos[1].nombre + " al precio de: $" + listaProductos[1].precio)
+    calcularTotal() {
+        let total = 0;
+        for (let i = 0; i < this.productos.length; i++) {
+            total = total + this.productos[i].precio;
+        }
+        return total;
     }
+}
 
-    let botonTres = document.getElementById("comprar.3")
-    botonTres.onclick = () =>{
-        console.log(listaProductos[2])
-        alert("Has comprado un: " + listaProductos[2].nombre + " al precio de: $" + listaProductos[2].precio)
-    }
-    let botonCuatro = document.getElementById("comprar.4")
-    botonCuatro.onclick = () =>{
-        console.log(listaProductos[3])
-        alert("Has comprado un: " + listaProductos[3].nombre + " al precio de: $" + listaProductos[3].precio)
-    }
+function limpiarCarrito() {
+    let divCarrito = document.querySelector("#carrito");
+    divCarrito.innerHTML = "";
+}
+
+function actualizarCarrito(carrito) {
+
+    let divCarrito = document.querySelector("#carrito");
+    carrito.productos.forEach(producto => {
+        divCarrito.innerHTML += renderCarrito(producto);
+    })
+    divCarrito.innerHTML += `<h1>Precio total $ ${carrito.calcularTotal()}</h1>`
+
+}
+
+function renovarStorage() {
+    localStorage.removeItem("carrito");
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+window.addEventListener(`DOMContentLoaded`, (e) => {
+
+    let storage = JSON.parse(localStorage.getItem("carrito"));
+    let carritoGuardado = new Carrito(storage.id, storage.productos);
+    storage.productos.forEach(producto => {
+        carritoGuardado.productos.push(producto);
+    })
+
+    limpiarCarrito();
+    actualizarCarrito(carritoGuardado);
+
+});
 
 
+let catalogoProductos = [];
+
+let producto1 = new Producto(1, "Guardapolvo Acrocel Blanco", "acrocel_blanco.jpeg", 3500);
+let producto2 = new Producto(2, "Guardapolvo Acrocel Color", "acrocel_color.jpeg", 3600);
+let producto3 = new Producto(3, "Guardapolvo Tropical Mecanica Blanco", "tropical_mec_blanca.jpeg", 3700);
+let producto4 = new Producto(4, "Guardapolvo Tropical Mecanica Color", "tropical_mec_color.jpeg", 3800);
+
+catalogoProductos.push(producto1);
+catalogoProductos.push(producto2);
+catalogoProductos.push(producto3);
+catalogoProductos.push(producto4);
+
+let cardsDiv = document.querySelector("#cards");
 
 
-usuario()
-menu()
+catalogoProductos.forEach(producto => {
+    cardsDiv.innerHTML += renderCard(producto);
+})
+
+function renderCard(producto) {
+    let cardRendered = `
+<div class="card m-3" style="width: 18rem;">
+    <img src="./img/${producto.img}" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">${producto.id}.${producto.nombre}</h5>
+        <p class="card-text">$ ${producto.precio}</p>
+        <a href="#" class="btn btn-primary botonDeCompra" id="${producto.id}">Agregar al carrito</a>
+    </div>
+</div>
+`;
+    return cardRendered;
+}
+
+function renderCarrito(producto) {
+    let carritoRendered = `
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Producto ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${producto.id}</td>
+        <td>${producto.nombre}</td>
+        <td>$ ${producto.precio}</td>
+      </tr>
+     
+    </tbody>
+  </table>
+`;
+    return carritoRendered;
+}
+
+let carrito = new Carrito(1);
+
+let botones = document.querySelectorAll(".botonDeCompra");
+let arrayDeBotones = Array.from(botones)
+
+arrayDeBotones.forEach(boton => {
+    boton.addEventListener("click", (e) => {
+        let productoSeleccionado = catalogoProductos.find(producto => producto.id == e.target.id);
+        carrito.productos.push(productoSeleccionado);
+        limpiarCarrito();
+        actualizarCarrito(carrito)
+        renovarStorage()
+
+    })
+
+
+})
