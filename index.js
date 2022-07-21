@@ -90,24 +90,26 @@ function renderCarrito(producto) {
     let carritoRendered = `
     <table class="table">
     <thead>
-      <tr>
-        <th scope="col">Producto ID</th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Precio</th>
-      </tr>
+            <tr>
+                <th scope="col">Producto ID</th>
+                <th scope="col">Nombre Producto</th>
+                <th scope="col">Precio</th>
+            </tr>
     </thead>
     <tbody>
-      <tr>
+    <tr>
         <td>${producto.id}</td>
         <td>${producto.nombre}</td>
         <td>$ ${producto.precio}</td>
-      </tr>
-     
+        
+    </tr>
+    
     </tbody>
-  </table>
+    </table>
 `;
     return carritoRendered;
 }
+
 
 let carrito = new Carrito(1);
 
@@ -124,5 +126,26 @@ arrayDeBotones.forEach(boton => {
 
     })
 
-
 })
+botonVaciar.addEventListener("click", () => {
+    carrito.producto.length = 0;
+    limpiarCarrito();
+    total();
+    renovarStorage();
+});
+
+const botonBorrar = document.querySelectorAll(".botonBorrar");
+const arrayDeBotonBorrar = Array.from(botonBorrar);
+arrayDeBotonBorrar.find((boton) => {
+    boton.addEventListener("click", (e) => {
+        const item = carrito.producto.find(
+            (producto) => producto.id == e.target.id
+        );
+        console.log(item);
+        const indice = carrito.producto.indexOf(item);
+        carrito.producto.splice(indice, 1);
+        limpiarCarrito();
+        actualizarCarrito(carrito);
+        total();
+    });
+});
