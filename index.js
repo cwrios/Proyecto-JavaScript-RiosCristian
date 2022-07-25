@@ -147,11 +147,6 @@ arrayDeBotonBorrar.find((boton) => {
         const item = carrito.producto.find(
             (producto) => producto.id == e.target.id
         );
-        Swal.fire(
-            'Usted a agregado un producto',
-            '',
-            'success'
-          )
         const indice = carrito.producto.indexOf(item);
         carrito.producto.splice(indice, 1);
         limpiarCarrito();
