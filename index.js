@@ -120,6 +120,11 @@ arrayDeBotones.forEach(boton => {
     boton.addEventListener("click", (e) => {
         let productoSeleccionado = catalogoProductos.find(producto => producto.id == e.target.id);
         carrito.productos.push(productoSeleccionado);
+        Swal.fire(
+            'Usted a agregado un producto',
+            '',
+            'success'
+          )
         limpiarCarrito();
         actualizarCarrito(carrito)
         renovarStorage()
@@ -132,6 +137,7 @@ botonVaciar.addEventListener("click", () => {
     limpiarCarrito();
     total();
     renovarStorage();
+
 });
 
 const botonBorrar = document.querySelectorAll(".botonBorrar");
@@ -141,7 +147,11 @@ arrayDeBotonBorrar.find((boton) => {
         const item = carrito.producto.find(
             (producto) => producto.id == e.target.id
         );
-        console.log(item);
+        Swal.fire(
+            'Usted a agregado un producto',
+            '',
+            'success'
+          )
         const indice = carrito.producto.indexOf(item);
         carrito.producto.splice(indice, 1);
         limpiarCarrito();
