@@ -55,35 +55,34 @@ window.addEventListener(`DOMContentLoaded`, (e) => {
 
 let catalogoProductos = [];
 
-// let producto1 = new Producto(1, "Guardapolvo Acrocel Blanco", "acrocel_blanco.jpeg", 3500);
-// let producto2 = new Producto(2, "Guardapolvo Acrocel Color", "acrocel_color.jpeg", 3600);
-// let producto3 = new Producto(3, "Guardapolvo Tropical Mecanica Blanco", "tropical_mec_blanca.jpeg", 3700);
-// let producto4 = new Producto(4, "Guardapolvo Tropical Mecanica Color", "tropical_mec_color.jpeg", 3800);
+let producto1 = new Producto(1, "Guardapolvo Acrocel Blanco", "acrocel_blanco.jpeg", 3500);
+let producto2 = new Producto(2, "Guardapolvo Acrocel Color", "acrocel_color.jpeg", 3600);
+let producto3 = new Producto(3, "Guardapolvo Tropical Mecanica Blanco", "tropical_mec_blanca.jpeg", 3700);
+let producto4 = new Producto(4, "Guardapolvo Tropical Mecanica Color", "tropical_mec_color.jpeg", 3800);
 
-// catalogoProductos.push(producto1);
-// catalogoProductos.push(producto2);
-// catalogoProductos.push(producto3);
-// catalogoProductos.push(producto4);
-const anadirProducto = (id, nombre, img, precio) => {
-    const productoanadir = new Producto(id, nombre, img, precio)
-    catalogoProductos.push(productoanadir)
-}
-
-const productoJson = async () => {
-    async function productoJson() {
-        try {
-            const response = await fetch("./productos.json")
-            const data = await response.json()
-            data.forEach((post) => {
-                anadirProducto(post.id, post.nombre, post.img, post.precio)
-            })
-        } catch (error) {
-            console.log(error)
-        }
+async function productoJson() {
+    try {
+        const response = await fetch("../json/producto.json")
+        const data = await response.json()
+        data.forEach((post) => {
+            anadirProducto(post.id, post.nombre, post.img, post.precio)
+        })
+    } catch (error) {
+        console.log(error)
     }
 }
-anadirProducto()
 
+catalogoProductos.push(producto1);
+catalogoProductos.push(producto2);
+catalogoProductos.push(producto3);
+catalogoProductos.push(producto4);
+
+function crearcards() {
+    let cardsDiv = document.querySelector("#cards");
+    catalogoProductos.forEach(producto => {
+        cardsDiv.innerHTML += renderCard(producto);
+    })
+}
 let cardsDiv = document.querySelector("#cards");
 
 
@@ -93,7 +92,7 @@ catalogoProductos.forEach(producto => {
 
 function renderCard(producto) {
     let cardRendered = `
-<div class="card" style="width: 18rem;">
+<div class="card m-3" style="width: 18rem;">
     <img src="./img/${producto.img}" class="card-img-top" alt="...">
     <div class="card-body">
         <h5 class="card-title">${producto.id}.${producto.nombre}</h5>
@@ -120,9 +119,9 @@ function renderCarrito(producto) {
         <td>${producto.id}</td>
         <td>${producto.nombre}</td>
         <td>$ ${producto.precio}</td>
-        
+
     </tr>
-    
+
     </tbody>
     </table>
 `;
@@ -174,3 +173,12 @@ arrayDeBotonBorrar.find((boton) => {
     });
 });
 
+function main() {
+    productoJson()
+        .then(response => {
+            crearcards()
+
+        })
+
+}
+main()
